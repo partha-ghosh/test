@@ -24,9 +24,10 @@ class DQN(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=6, out_channels=9, kernel_size=3, padding=1)
         self.conv3 = nn.Conv2d(in_channels=9, out_channels=12, kernel_size=3, padding=1)
         self.conv4 = nn.Conv2d(in_channels=12, out_channels=15, kernel_size=3, padding=1)
-        self.fc1 = nn.Linear(15*6*6+7, 120)
-        self.fc2 = nn.Linear(120, 60)
-        self.fc3 = nn.Linear(60, action_size)
+        self.fc1 = nn.Linear(15*6*6+7, 128)
+        self.fc2 = nn.Linear(128, 96)
+        self.fc3 = nn.Linear(96, 48)
+        self.fc4 = nn.Linear(48, action_size)
 
     def forward(self, observation):
         """ Forward pass to compute Q-values
@@ -52,7 +53,8 @@ class DQN(nn.Module):
         x = torch.cat([x, speed, abs_sensors, steering, gyroscope], dim=1)
         x = F.leaky_relu(self.fc1(x))
         x = F.leaky_relu(self.fc2(x))
-        x = self.fc3(x)
+        x = F.leaky_relu(self.fc3(x))
+        x = self.fc4(x)
         return x
 
     def extract_sensor_values(self, observation, batch_size):

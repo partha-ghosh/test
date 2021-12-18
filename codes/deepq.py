@@ -143,6 +143,11 @@ def learn(env,
     # Build networks
     policy_net = DQN(action_size, device).to(device)
     target_net = DQN(action_size, device).to(device)
+    try:
+        policy_net.load_state_dict(torch.load('agent.t7'))
+        policy_net.eval()
+    except:
+        pass
     target_net.load_state_dict(policy_net.state_dict())
     target_net.eval()
 
